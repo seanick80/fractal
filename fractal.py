@@ -8,10 +8,16 @@ Julia and Mandelbrot fractals image creation
 """
 
 from __future__ import division, print_function
-import pylab, argparse, collections, inspect, functools
+import pylab, argparse, collections, functools
 from itertools import takewhile
 import time
 import multiprocessing
+
+# Backwards compatible args parsing.
+try:
+    from inspect import getfullargspec as get_args
+except ImportError:
+    from inspect import getargspec as get_args
 
 Point = collections.namedtuple("Point", ["x", "y"])
 
@@ -169,7 +175,7 @@ def img2output(img, cmap=DEFAULT_COLORMAP, output=None, show=False):
 
 def call_kw(func, kwargs):
   """ Call func(**kwargs) but remove the possible unused extra keys before """
-  keys = inspect.getfullargspec(func).args
+  keys = get_args(func).args
   kwfiltered = dict((k, v) for k, v in kwargs.items() if k in keys)
   return func(**kwfiltered)
 
